@@ -146,6 +146,44 @@ ls test-input/
 # case-5-dangerous-operation.md
 ```
 
+### 5회 일관성 검증 스크립트 실행
+
+`scripts/run-consistency-check.mjs`는 5회 일관성 검증용 최소 실행 스크립트이다.
+전체 앱 구현이 아니라 제출 자산의 테스트 재현성을 확인하기 위한 것이다.
+`test-input/case-1-runtime-basic.md`를 규칙 기반 분석기로 5회 반복 분석하고, 핵심 출력 필드가 모두 동일한지 검증한다.
+
+```bash
+node scripts/run-consistency-check.mjs
+```
+
+**예상 출력:**
+
+```
+=== Python Code Visualizer — 5회 일관성 검증 ===
+입력 파일: .../test-input/case-1-runtime-basic.md
+반복 횟수: 5회
+
++-----+-----------------+------------------------------------+-------------+------------+-----------------+---------------------+-------------+--------+
+| Run | pipeline_status | block_type_sequence                | block_count | edge_count | high_risk_count | human_review_needed | schema_valid | result |
++-----+-----------------+------------------------------------+-------------+------------+-----------------+---------------------+-------------+--------+
+| 1   | runtime_detected | SETUP → LOAD → CORE_LOGIC → OUTPUT | 4           | 3          | 0               | false               | PASS        | PASS   |
+| 2   | runtime_detected | SETUP → LOAD → CORE_LOGIC → OUTPUT | 4           | 3          | 0               | false               | PASS        | PASS   |
+| 3   | runtime_detected | SETUP → LOAD → CORE_LOGIC → OUTPUT | 4           | 3          | 0               | false               | PASS        | PASS   |
+| 4   | runtime_detected | SETUP → LOAD → CORE_LOGIC → OUTPUT | 4           | 3          | 0               | false               | PASS        | PASS   |
+| 5   | runtime_detected | SETUP → LOAD → CORE_LOGIC → OUTPUT | 4           | 3          | 0               | false               | PASS        | PASS   |
++-----+-----------------+------------------------------------+-------------+------------+-----------------+---------------------+-------------+--------+
+
+--- 일관성 검증 ---
+  ✅ pipeline_status: 모두 "runtime_detected"
+  ✅ block_type_sequence: 모두 "SETUP → LOAD → CORE_LOGIC → OUTPUT"
+  ✅ block_count: 모두 "4"
+  ✅ edge_count: 모두 "3"
+  ✅ high_risk_count: 모두 "0"
+  ✅ human_review_needed: 모두 "false"
+
+CONSISTENCY CHECK PASSED
+```
+
 ---
 
 ## 5. 테스트 입력 케이스
